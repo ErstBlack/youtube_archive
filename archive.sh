@@ -2,7 +2,7 @@
 
 pip3 install -U youtube-dl
 
-echo "Starting youtube-backup..."
+echo "Starting youtube-archive..."
 pushd /youtube-directory
 
 youtube-dl \
