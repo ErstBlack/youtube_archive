@@ -1,12 +1,14 @@
 #!/bin/bash
 
 pip3 install -U youtube-dl
+source /etc/youtube-archive.conf
 
-echo "Starting youtube-backup..."
+echo "Starting youtube-archive..."
 pushd /youtube-directory
 
 youtube-dl \
-	--format "(bestvideo[vcodec^=av01][height>=1080][fps>30]/bestvideo[vcodec=vp9.2][height>=1080][fps>30]/bestvideo[vcodec=vp9][height>=1080][fps>30]/bestvideo[vcodec^=av01][height>=1080]/bestvideo[vcodec=vp9.2][height>=1080]/bestvideo[vcodec=vp9][height>=1080]/bestvideo[height>=1080]/bestvideo[vcodec^=av01][height>=720][fps>30]/bestvideo[vcodec=vp9.2][height>=720][fps>30]/bestvideo[vcodec=vp9][height>=720][fps>30]/bestvideo[vcodec^=av01][height>=720]/bestvideo[vcodec=vp9.2][height>=720]/bestvideo[vcodec=vp9][height>=720]/bestvideo[height>=720]/bestvideo)+(bestaudio[acodec=opus]/bestaudio)/best" \
+	--format "${format}" \
+	--limit-rate "${RATE_LIMIT}" \
 	--newline \
 	--ignore-errors \
 	--no-continue \
@@ -19,9 +21,9 @@ youtube-dl \
 	--write-thumbnail \
 	--restrict-filenames \
 	--merge-output-format "mkv" \
-	--output "%(uploader)s/%(title)s.%(ext)s" \
-	--download-archive archive.log \
-	--batch-file "channels.txt" 
+	--output "${OUTPUT_FORMAT}" \
+	--download-archive "${ARCHIVE_FILE}" \
+	--batch-file "${CHANNELS_FILE}" 
 
 # Find all newly downloaded files
 while IFS=  read -r -d $'\0'; do
@@ -52,7 +54,7 @@ for i in "${array[@]}"; do
 		&& mv "${i}.tempfile" "${i}"
 
 	rm -f "${i/mkv/jpg}"
-	chown 1000:1000 "${i}"
+	chown "${VIDEO_UID}":"${VIDEO_GID}" "${i}"
 	counter=$((counter+1))
 done
 echo "### End Post-Processing ###"
