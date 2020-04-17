@@ -10,9 +10,9 @@ There are other environment variables if you want to customize various things in
 | Docker Environment Var. | Description |
 | ----------------------- | ----------- |
 | `QUALITY: <4320p\|2160p\|1440p\|1080p\|720p>`<br/> *Default: 1080p* | Sets the maximum quality of the downloaded video. 8k, 4k, and 2k may also be used. |
+| `RATE_LIMIT: <Rate Limit>`<br/> *Default: 5M* | Sets the rate limit used by youtube-dl. |
 | `ARCHIVE_FILE: <Filename>`<br/> *Default: archive.log* | Sets the archive log created by youtube-dl. |
 | `CHANNELS_FILE: <Filename>`<br/> *Default: channels.txt* | Sets the channels file read by youtube-dl. |
 | `OUTPUT_FORMAT: <Format>`<br/> *Default: %(uploader)s/%(title)s.%(ext)s* | Sets the output format used youtube-dl. |
 | `VIDEO_UID: <UID>`<br/> *Default: 1000* | Sets the user ownership for the downloaded videos. |
 | `VIDEO_GID: <GID>`<br/> *Default: 1000* | Sets the group ownership for the downloaded videos. |
-
