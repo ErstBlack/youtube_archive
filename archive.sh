@@ -8,6 +8,7 @@ pushd /youtube-directory
 
 youtube-dl \
 	--format "${format}" \
+	--limit-rate "${RATE_LIMIT}" \
 	--newline \
 	--ignore-errors \
 	--no-continue \
