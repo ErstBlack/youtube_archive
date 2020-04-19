@@ -31,8 +31,8 @@ while IFS=  read -r -d $'\0'; do
 done < <(find . -not -name "*.txt" -iname "*.mkv" -type f -user 0 -group 0 -print0)
 
 # Print out newly downloaded files
-array_len=${#array[@]}
-if [ "${array_len}" -eq 0 ]; then
+ARRAY_LEN=${#array[@]}
+if [ "${ARRAY_LEN}" -eq 0 ]; then
 	echo "No New Videos Downloaded..."
 	exit 0
 else
@@ -43,19 +43,24 @@ else
 	echo "### End Newly Downloaded Videos ###"
 fi
 
-# Merge thumbnail into mkv
-counter=1
-echo "### Start Post-Processing ###"
-for i in "${array[@]}"; do
-	echo "Adding thumbnail: (${counter}/${array_len})"
-	ffmpeg -v warning -i "${i}" -i "${i/mkv/jpg}" -map 1 -map 0 \
-		-c copy -disposition:0 attached_pic \
-		-f matroska "${i}.tempfile" \
-		&& mv "${i}.tempfile" "${i}"
+merge() {
+	filename="$1"
+	sequence_num="$2"
+	echo "Adding thumbnail: (${sequence_num}/${ARRAY_LEN})"
+	ffmpeg -v warning -i "${filename}" -i "${filename/mkv/jpg}" -map 1 -map 0 \
+                -c copy -disposition:0 attached_pic \
+                -f matroska "${filename}.tempfile" \
+		&& mv -f "${filename}.tempfile" "${filename}"
+		
+	rm -f "${filename/mkv/jpg}"
+	chown "${VIDEO_UID}":"${VIDEO_GID}" "${filename}"
+}
 
-	rm -f "${i/mkv/jpg}"
-	chown "${VIDEO_UID}":"${VIDEO_GID}" "${i}"
-	counter=$((counter+1))
-done
+export -f merge
+export ARRAY_LEN VIDEO_UID VIDEO_GID SHELL=$(type -p bash) 
+
+# Merge thumbnail into mkv
+echo "### Start Post-Processing ###"
+parallel -k merge "{}" "{#}" ::: "${array[@]}"
 echo "### End Post-Processing ###"
 

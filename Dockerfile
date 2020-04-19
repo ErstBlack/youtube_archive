@@ -2,7 +2,7 @@ FROM alpine:latest
 
 MAINTAINER erstblack
 
-RUN apk add --no-cache bash ffmpeg python3
+RUN apk add --no-cache bash ffmpeg python3 parallel
 RUN pip3 install -U pip youtube-dl
 
 COPY ./archive.sh /archive.sh
