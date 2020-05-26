@@ -3,6 +3,17 @@
 pip3 install -U youtube-dl
 source /etc/youtube-archive.conf
 
+echo "### Environment Variables ###"
+echo "Archive File:  ${ARCHIVE_FILE}"
+echo "Channels File: ${CHANNELS_FILE}"
+echo "Output Format: ${OUTPUT_FORMAT}"
+echo "Video UID:     ${VIDEO_UID}"
+echo "Video GID:     ${VIDEO_GID}"
+echo "Rate Limit:    ${RATE_LIMIT}"
+echo "Quality:       ${QUALITY}"
+echo "Format String: ${format}"
+echo "### End Environment Variables ###"
+
 echo "Starting youtube-archive..."
 pushd /youtube-directory
 
