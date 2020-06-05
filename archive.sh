@@ -1,7 +1,18 @@
 #!/bin/bash
 
 pip3 install -U youtube-dl
-source /etc/youtube-archive.conf
+source /app/youtube-archive.conf
+
+echo "### Youtube Archive Vars ###"
+echo "Channels File:   ${CHANNELS_FILE}"
+echo "Archive File:    ${ARCHIVE_FILE}"
+echo "Quality:         ${QUALITY}"
+echo "Rate Limit:      ${RATE_LIMIT}"
+echo "Video Uid:       ${VIDEO_UID}"
+echo "Video Gid:       ${VIDEO_GID}"
+echo "Output Format:   ${OUTPUT_FORMAT}"
+echo "Download Format: ${format}"
+echo "### End Youtube Archive Vars ###"
 
 echo "Starting youtube-archive..."
 pushd /youtube-directory
@@ -38,7 +49,7 @@ if [ "${ARRAY_LEN}" -eq 0 ]; then
 else
 	echo "### Newly Downloaded Videos ###"
 	for i in "${array[@]}"; do
-	       echo "$i" | sed 's#\./##g' | sed 's#/#: #g'
+	       echo "$i" | sed 's#\./##g' | sed 's#/#: #g' | sed 's/\.mkv//'
 	done
 	echo "### End Newly Downloaded Videos ###"
 fi
@@ -46,7 +57,9 @@ fi
 merge() {
 	filename="$1"
 	sequence_num="$2"
-	echo "Adding thumbnail: (${sequence_num}/${ARRAY_LEN})"
+	video_name="$(echo $1 | sed 's#\./##g' | sed 's#/#: #g' | sed 's/\.mkv//')"
+
+	echo "Adding thumbnail: (${sequence_num}/${ARRAY_LEN}) ${video_name}"
 	ffmpeg -v warning -i "${filename}" -i "${filename/mkv/jpg}" -map 1 -map 0 \
                 -c copy -disposition:0 attached_pic \
                 -f matroska "${filename}.tempfile" \
