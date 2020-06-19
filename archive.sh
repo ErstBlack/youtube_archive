@@ -58,15 +58,16 @@ merge() {
 	filename="$1"
 	sequence_num="$2"
 	video_name="$(echo $1 | sed 's#\./##g' | sed 's#/#: #g' | sed 's/\.mkv//')"
+	thumbnail_file="$(find $(dirname ${filename}) -name "$(basename ${filename%.*})"* | grep -v $(basename ${filename}))"
 
-	echo "Adding thumbnail: (${sequence_num}/${ARRAY_LEN}) ${video_name}"
-	ffmpeg -v warning -i "${filename}" -i "${filename/mkv/jpg}" -map 1 -map 0 \
+        echo "Adding thumbnail: (${sequence_num}/${ARRAY_LEN}) ${video_name}"
+
+        ffmpeg -v warning -i "${filename}" -i "${thumbnail_file}" -map 1 -map 0 \
                 -c copy -disposition:0 attached_pic \
-                -f matroska "${filename}.tempfile" \
-		&& mv -f "${filename}.tempfile" "${filename}"
-		
-	rm -f "${filename/mkv/jpg}"
-	chown "${VIDEO_UID}":"${VIDEO_GID}" "${filename}"
+                -f matroska "${filename}.tempfile" && \
+                mv -f "${filename}.tempfile" "${filename}" && \
+                rm -f "${thumbnail_file}" && \
+                chown "${VIDEO_UID}":"${VIDEO_GID}" "${filename}"
 }
 
 export -f merge
