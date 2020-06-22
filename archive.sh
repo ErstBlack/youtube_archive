@@ -8,6 +8,8 @@ echo "Channels File:   ${CHANNELS_FILE}"
 echo "Archive File:    ${ARCHIVE_FILE}"
 echo "Quality:         ${QUALITY}"
 echo "Rate Limit:      ${RATE_LIMIT}"
+echo "Retries:         ${RETRIES}"
+echo "Buffer Size:     ${BUFFER_SIZE}"
 echo "Video Uid:       ${VIDEO_UID}"
 echo "Video Gid:       ${VIDEO_GID}"
 echo "Output Format:   ${OUTPUT_FORMAT}"
@@ -20,6 +22,8 @@ pushd /youtube-directory
 youtube-dl \
 	--format "${format}" \
 	--limit-rate "${RATE_LIMIT}" \
+	--buffer-size "${BUFFER_SIZE}" \
+	--retries "${RETRIES}" \
 	--newline \
 	--ignore-errors \
 	--no-continue \

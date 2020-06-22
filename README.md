@@ -16,3 +16,5 @@ There are other environment variables if you want to customize various things in
 | `OUTPUT_FORMAT: <Format>`<br/> *Default: %(uploader)s/%(title)s.%(ext)s* | Sets the output format used youtube-dl. |
 | `VIDEO_UID: <UID>`<br/> *Default: 1000* | Sets the user ownership for the downloaded videos. |
 | `VIDEO_GID: <GID>`<br/> *Default: 1000* | Sets the group ownership for the downloaded videos. |
+| `RETRIES: <Retries>`<br/> *Default: 10* | Sets the number of retries for youtube-dl. |
+| `BUFFER_SIZE: <Buffer Size>`<br/> *Default: 1024* | Sets the buffer size for youtube-dl. |
