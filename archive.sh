@@ -6,8 +6,11 @@ source /app/youtube-archive.conf
 echo "### Youtube Archive Vars ###"
 echo "Channels File:   ${CHANNELS_FILE}"
 echo "Archive File:    ${ARCHIVE_FILE}"
+echo "Save Archive:    ${SAVE_ARCHIVE}"
 echo "Quality:         ${QUALITY}"
 echo "Rate Limit:      ${RATE_LIMIT}"
+echo "Retries:         ${RETRIES}"
+echo "Buffer Size:     ${BUFFER_SIZE}"
 echo "Video Uid:       ${VIDEO_UID}"
 echo "Video Gid:       ${VIDEO_GID}"
 echo "Output Format:   ${OUTPUT_FORMAT}"
@@ -17,9 +20,26 @@ echo "### End Youtube Archive Vars ###"
 echo "Starting youtube-archive..."
 pushd /youtube-directory
 
+echo "Backing up ${ARCHIVE_FILE}..."
+
+if [[ -f "${ARCHIVE_FILE}" && "${SAVE_ARCHIVE}" -eq 1 ]]; then
+	last_archive="$(date -I'seconds')-${ARCHIVE_FILE}"
+	mkdir -p "${ARCHIVE_FILE%.*}-history"
+
+	cp "${ARCHIVE_FILE}" "${ARCHIVE_FILE%.*}-history/${last_archive}"
+
+	pushd "${ARCHIVE_FILE%.*}-history/"
+	zip old-archive-files.zip $(readlink last-archive-file)
+	rm -f $(readlink last-archive-file)
+	ln -sf "${last_archive}" last-archive-file
+	popd
+fi
+
 youtube-dl \
 	--format "${format}" \
 	--limit-rate "${RATE_LIMIT}" \
+	--buffer-size "${BUFFER_SIZE}" \
+	--retries "${RETRIES}" \
 	--newline \
 	--ignore-errors \
 	--no-continue \
@@ -58,15 +78,17 @@ merge() {
 	filename="$1"
 	sequence_num="$2"
 	video_name="$(echo $1 | sed 's#\./##g' | sed 's#/#: #g' | sed 's/\.mkv//')"
-	thumbnail_file="$(find $(dirname ${filename}) -name "$(basename ${filename%.*})"* | grep -v $(basename ${filename}))"
+	if [ -f "${filename/.mkv/.webp}" ]; then		
+		magick "${filename/.mkv/.webp}" "${filename/.mkv/.jpg}"
+	fi
 
         echo "Adding thumbnail: (${sequence_num}/${ARRAY_LEN}) ${video_name}"
 
-        ffmpeg -v warning -i "${filename}" -i "${thumbnail_file}" -map 1 -map 0 \
+        ffmpeg -v warning -i "${filename}" -i "${filename/.mkv/.jpg}" -map 1 -map 0 \
                 -c copy -disposition:0 attached_pic \
                 -f matroska "${filename}.tempfile" && \
                 mv -f "${filename}.tempfile" "${filename}" && \
-                rm -f "${thumbnail_file}" && \
+		rm -f "${filename/.mkv/.webp}" "${filename/.mkv/.jpg}" && \
                 chown "${VIDEO_UID}":"${VIDEO_GID}" "${filename}"
 }
 
