@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pip3 install -U youtube-dl
+#pip3 install -U youtube-dl
 source /app/youtube-archive.conf
 
 echo "### Youtube Archive Vars ###"
@@ -44,7 +44,6 @@ youtube-dl \
 	--ignore-errors \
 	--no-continue \
 	--no-overwrites \
-	--force-ipv4 \
 	--geo-bypass \
 	--add-metadata \
 	--all-subs \
@@ -78,18 +77,27 @@ merge() {
 	filename="$1"
 	sequence_num="$2"
 	video_name="$(echo $1 | sed 's#\./##g' | sed 's#/#: #g' | sed 's/\.mkv//')"
-	if [ -f "${filename/.mkv/.webp}" ]; then		
-		magick "${filename/.mkv/.webp}" "${filename/.mkv/.jpg}"
+	if [ -f "${filename/.mkv/.jpg}" ]; then
+		if [ $(magick identify -format %m "${filename/.mkv/.jpg}") == "WEBP" ]; then
+			mv "${filename/.mkv/.jpg}" "${filename/.mkv/.webp}"
+			magick convert "${filename/.mkv/.webp}" "${filename/.mkv/.jpg}"
+		fi
+	elif [ -f "${filename/.mkv/.webp}" ]; then
+		if [ $(magick identify -format %m "${filename/.mkv/.webp}") == "WEBP" ]; then
+			magick convert "${filename/.mkv/.webp}" "${filename/.mkv/.jpg}"
+		else
+			mv "${filename/.mkv/.webp}" "${filename/.mkv/.jpg}"
+		fi
 	fi
 
-        echo "Adding thumbnail: (${sequence_num}/${ARRAY_LEN}) ${video_name}"
 
-        ffmpeg -v warning -i "${filename}" -i "${filename/.mkv/.jpg}" -map 1 -map 0 \
-                -c copy -disposition:0 attached_pic \
-                -f matroska "${filename}.tempfile" && \
-                mv -f "${filename}.tempfile" "${filename}" && \
-		rm -f "${filename/.mkv/.webp}" "${filename/.mkv/.jpg}" && \
-                chown "${VIDEO_UID}":"${VIDEO_GID}" "${filename}"
+        echo "Adding thumbnail: (${sequence_num}/${ARRAY_LEN}) ${video_name}"
+ 	ffmpeg -v warning -i "${filename}" -i "${filename/.mkv/.jpg}" -map 1 -map 0 \
+		-c copy -disposition:0 attached_pic \
+		-f matroska "${filename}.tempfile" && \
+		mv -f "${filename}.tempfile" "${filename}" && \
+		chown "${VIDEO_UID}":"${VIDEO_GID}" "${filename}" && \
+		rm -f "${filename/.mkv/.jpg}" "${filename/.mkv/.webp}"
 }
 
 export -f merge
