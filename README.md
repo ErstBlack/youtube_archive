@@ -19,3 +19,4 @@ There are other environment variables if you want to customize various things in
 | `VIDEO_GID: <GID>`<br/> *Default: 1000* | Sets the group ownership for the downloaded videos. |
 | `RETRIES: <Retries>`<br/> *Default: 10* | Sets the number of retries for youtube-dl. |
 | `BUFFER_SIZE: <Buffer Size>`<br/> *Default: 1024* | Sets the buffer size for youtube-dl. |
+| `DAY_DELAY: <Buffer Size>`<br/> *Default: -1* | Sets the minimum age for downloading vidoes.  Youtube may take up to 30 days for transcoding. |

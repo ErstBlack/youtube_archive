@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python3 -m pip install -U youtube-dlc
+python3 -m pip install -U yt-dlp
 source /app/youtube-archive.conf
 
 echo "### Youtube Archive Vars ###"
@@ -14,6 +14,7 @@ echo "Buffer Size:     ${BUFFER_SIZE}"
 echo "Video Uid:       ${VIDEO_UID}"
 echo "Video Gid:       ${VIDEO_GID}"
 echo "Output Format:   ${OUTPUT_FORMAT}"
+echo "Day Delay:       ${DAY_DELAY}"
 echo "Download Format: ${format}"
 echo "### End Youtube Archive Vars ###"
 
@@ -54,20 +55,18 @@ youtube-dlc \
 	--merge-output-format "mkv" \
 	--output "${OUTPUT_FORMAT}" \
 	--download-archive "${ARCHIVE_FILE}" \
-	--batch-file "${CHANNELS_FILE}" 
+	--batch-file "${CHANNELS_FILE}" \
+	--datebefore $(date --date="${DAY_DELAY} days ago" +%Y%m%d)
 
 # Find all newly downloaded files
-while IFS=  read -r -d $'\0'; do
-	array+=("$REPLY")
-done < <(find . -not -name "*.txt" -iname "*.mkv" -type f -user 0 -group 0 -print0)
+mapfile -d '' new_videos < <(find . -not -name "*.txt" -iname "*.mkv" -type f -user 0 -group 0 -print0)
 
 # Print out newly downloaded files
-ARRAY_LEN=${#array[@]}
-if [ "${ARRAY_LEN}" -eq 0 ]; then
+if [ "${#new_videos[@]}" -eq 0 ]; then
 	echo "No New Videos Downloaded..."
 else
 	echo "### Newly Downloaded Videos ###"
-	for i in "${array[@]}"; do
+	for i in "${new_videos[@]}"; do
 	       echo "$i" | sed 's#\./##g' | sed 's#/#: #g' | sed 's/\.mkv//'
 	       chown "${VIDEO_GID}":"${VIDEO_UID}" "$i"
 	done
