@@ -37,7 +37,7 @@ if [[ -f "${ARCHIVE_FILE}" && "${SAVE_ARCHIVE}" -eq 1 ]]; then
 
 fi
 
-youtube-dlc \
+yt-dlp \
 	--format "${format}" \
 	--limit-rate "${RATE_LIMIT}" \
 	--buffer-size "${BUFFER_SIZE}" \
