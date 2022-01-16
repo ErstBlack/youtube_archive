@@ -6,6 +6,7 @@ source /app/youtube-archive.conf
 echo "### Youtube Archive Vars ###"
 echo "Channels File:   ${CHANNELS_FILE}"
 echo "Archive File:    ${ARCHIVE_FILE}"
+echo "Cookies File:    ${COOKIES_FILE}"
 echo "Save Archive:    ${SAVE_ARCHIVE}"
 echo "Quality:         ${QUALITY}"
 echo "Rate Limit:      ${RATE_LIMIT}"
@@ -54,6 +55,7 @@ yt-dlp \
 	--restrict-filenames \
 	--merge-output-format "mkv" \
 	--output "${OUTPUT_FORMAT}" \
+	--cookies "${COOKIES_FILE}" \
 	--download-archive "${ARCHIVE_FILE}" \
 	--batch-file "${CHANNELS_FILE}" \
 	--datebefore $(date --date="${DAY_DELAY} days ago" +%Y%m%d)
