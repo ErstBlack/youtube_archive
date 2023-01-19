@@ -10,6 +10,7 @@ There are other environment variables if you want to customize various things in
 | Docker Environment Var. | Description |
 | ----------------------- | ----------- |
 | `QUALITY: <4320p\|2160p\|1440p\|1080p\|720p>`<br/> *Default: 1080p* | Sets the maximum quality of the downloaded video. 8k, 4k, and 2k may also be used. |
+| `RUN_CYCLE: <Schedule Time>`<br/> *Default: none* | If this variable is set to a time in "HH:MM" format, run the program at that time every day. This will daemonize this process for background scheduling. |
 | `RATE_LIMIT: <Rate Limit>`<br/> *Default: 5M* | Sets the rate limit used by youtube-dl. |
 | `ARCHIVE_FILE: <Filename>`<br/> *Default: archive.log* | Sets the archive log created by youtube-dl. |
 | `SAVE_ARCHIVE: <0\|1>`<br/> *Default: 0* | Toggles saving of the archive file.  0 for no, 1 for yes. |
