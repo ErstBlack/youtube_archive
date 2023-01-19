@@ -77,7 +77,7 @@ while true; do
 	fi
 
 	
-	if [ $RUN_CYCLE = "none" ]; then
+	if [ "$RUN_CYCLE" == "none" ]; then
 		break
 	else
 		echo "Sleep"
