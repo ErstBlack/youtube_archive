@@ -53,7 +53,6 @@ while true; do
 		--all-subs \
 		--embed-subs \
 		--embed-thumbnail \
-		--restrict-filenames \
 		--merge-output-format "mkv" \
 		--output "${OUTPUT_FORMAT}" \
 		--cookies "${COOKIES_FILE}" \
