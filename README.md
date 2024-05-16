@@ -22,3 +22,4 @@ There are other environment variables if you want to customize various things in
 | `BUFFER_SIZE: <Buffer Size>`<br/> *Default: 1024* | Sets the buffer size for youtube-dl. |
 | `DAY_DELAY: <Buffer Size>`<br/> *Default: -1* | Sets the minimum age for downloading videos.  Youtube may take up to 30 days for transcoding. |
 | `COOKIES_FILE: <Filename>`<br/> *Default: /tmp/cookies.txt* | Sets the cookies file. |
+| `UPDATE_YT_DLP: <0\|1>`<br/> *Default: 1* | Toggles updating yt-dlp before running. 0 for no, 1 for yes. |
