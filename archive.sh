@@ -1,14 +1,17 @@
 #!/bin/bash
 
 while true; do
-	python3 -m pip install -U yt-dlp
 	source /app/youtube-archive.conf
+	if [[ "${UPDATE_YT_DLP}" -eq 1 ]]; then
+		python3 -m pip install --break-system-packages --upgrade yt-dlp
+	fi
 
 	echo "### Youtube Archive Vars ###"
 	echo "Channels File:   ${CHANNELS_FILE}"
 	echo "Archive File:    ${ARCHIVE_FILE}"
 	echo "Cookies File:    ${COOKIES_FILE}"
 	echo "Save Archive:    ${SAVE_ARCHIVE}"
+	echo "Update yt-dlp:   ${UPDATE_YT_DLP}"
 	echo "Quality:         ${QUALITY}"
 	echo "Rate Limit:      ${RATE_LIMIT}"
 	echo "Retries:         ${RETRIES}"
